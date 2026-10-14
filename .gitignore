@@ -1,0 +1,6 @@
+dist/
+node_modules/
+.DS_Store
+output/
+tmp/
+design/fonts/*-variable.ttf

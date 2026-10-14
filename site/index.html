@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="description" content="生活构想，分享家装知识、材料观察与产品体验。关于空间与产品，关于日常的认真思考。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://aiellochan.github.io/notes/">
+  <title>生活构想 · 空间、材料与产品</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <svg class="svg-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="mark" viewBox="0 0 32 32"><path d="M3 3h17v7H10v19H3V3Zm26 0v26H12v-7h10V3h7Z" fill="currentColor"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="search-icon" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="grid-icon" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="list-icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="expand-icon" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="close-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  </defs></svg>
+  <a class="skip" href="#main">跳转到内容</a>
+  <header class="site-header">
+    <a class="brand" href="#/" aria-label="生活构想首页"><span>生活构想</span></a>
+    <nav class="header-nav" aria-label="主导航"><a href="#collection" id="browse-link">探索内容</a><a href="#about" id="about-link">关于构想</a></nav>
+  </header>
+  <main id="main">
+    <section id="explore" aria-labelledby="explore-title">
+      <div class="hero" id="brand-hero">
+        <div class="hero-copy"><h1 id="explore-title">生活，<br>有所构想。</h1><p>空间、材料与产品，<br>关于日常的认真思考。</p><a class="hero-cta" href="#collection">浏览构想</a></div>
+        <div class="hero-media"><img src="media/material-study-v0.5.png" width="1536" height="1024" alt="品牌材质概念图：自然光下的矿物墙面、拉丝金属桌面与压花玻璃，AI 生成" fetchpriority="high"><span class="image-credit">品牌概念图 · AI 生成</span><div class="material-view" role="group" aria-label="概念图取景"><button type="button" id="whole-scene" aria-pressed="true">全景</button><button type="button" id="material-closeup" aria-pressed="false">细节</button></div></div>
+      </div>
+      <section class="collection" id="collection" aria-labelledby="collection-title">
+        <div class="collection-heading"><div><h2 id="collection-title">探索构想</h2><p>关于住，也关于用。</p></div><span class="total-label"><span id="total-count">1</span> 篇内容</span></div>
+        <div class="collection-tools"><nav id="category-navigation" aria-label="内容分类"></nav><div class="collection-controls"><form class="search" role="search"><svg aria-hidden="true"><use href="#search-icon"/></svg><label class="sr-only" for="search">搜索内容</label><input id="search" type="search" placeholder="搜索构想" autocomplete="off" maxlength="100"><kbd aria-hidden="true">/</kbd></form><div class="view-switch" role="group" aria-label="展示方式"><button type="button" id="grid-view" aria-pressed="true" aria-label="卡片视图"><svg aria-hidden="true"><use href="#grid-icon"/></svg></button><button type="button" id="list-view" aria-pressed="false" aria-label="列表视图"><svg aria-hidden="true"><use href="#list-icon"/></svg></button></div></div></div>
+        <p class="result-line" id="result-count" role="status"></p>
+        <div id="content-grid" class="content-grid"></div>
+        <div class="empty" id="empty-state" hidden><svg aria-hidden="true"><use href="#search-icon"/></svg><h3>还没有找到相关内容</h3><p>试试材料名称、产品型号，或者查看全部构想。</p><button type="button" id="reset">查看全部构想</button></div>
+      </section>
+    </section>
+    <section id="detail" class="detail" hidden aria-labelledby="detail-title">
+      <div class="detail-top"><a class="back" href="#/"><svg aria-hidden="true"><use href="#arrow"/></svg>返回构想</a><span id="breadcrumb-current">阅读</span></div>
+      <div class="detail-layout">
+        <div class="gallery-column">
+          <div class="gallery-bar"><div class="reading-switch" role="group" aria-label="图片阅读方式"><button type="button" id="paged-view" aria-pressed="true">分页浏览</button><button type="button" id="continuous-view" aria-pressed="false">连续阅读</button></div><button type="button" class="expand" id="expand-image" aria-label="放大当前图片"><svg aria-hidden="true"><use href="#expand-icon"/></svg>放大</button></div>
+          <div id="paged-gallery"><div class="image-stage"><button class="page-arrow prev" id="previous" aria-label="上一张" type="button"><svg aria-hidden="true"><use href="#arrow"/></svg></button><button type="button" class="main-image-button" id="image-button" aria-label="放大当前图片"></button><button class="page-arrow next" id="next" aria-label="下一张" type="button"><svg aria-hidden="true"><use href="#arrow"/></svg></button></div><div class="gallery-status"><span id="page-position" role="status"></span><span>左右方向键切换图片</span></div><div id="filmstrip" class="filmstrip" aria-label="图文缩略图"></div></div>
+          <div id="continuous-gallery" class="continuous-gallery" hidden></div>
+        </div>
+        <article class="copy-column"><span id="detail-category" class="category-label"></span><h1 id="detail-title"></h1><div class="detail-meta"><span id="image-count"></span><span>图文内容</span></div><div id="detail-body" class="original-copy"></div><div id="detail-tags" class="tags"></div></article>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer" id="about"><div class="footer-top"><h2>关于生活构想</h2><p>分享家装知识、材料观察和产品体验。<br>让关于空间与产品的选择，更清楚一些。</p></div><div class="footer-bottom"><span>© 2026 Aiello Chan</span><a href="https://aiellochan.github.io/" target="_blank" rel="noopener noreferrer">认识 Aiello<svg aria-hidden="true"><use href="#arrow"/></svg></a><span>空间 · 材料 · 产品</span></div></footer>
+  <dialog id="image-dialog" aria-label="原图浏览"><div class="dialog-bar"><span id="dialog-caption"></span><button id="close-dialog" aria-label="关闭原图" type="button"><svg aria-hidden="true"><use href="#close-icon"/></svg>关闭</button></div><div class="dialog-image" id="full-image-container"></div><div class="dialog-controls"><button id="dialog-prev" type="button">上一张</button><span id="dialog-position" role="status"></span><button id="dialog-next" type="button">下一张</button></div></dialog>
+</body>
+</html>
