@@ -37,6 +37,7 @@
         <div class="collection-tools"><nav id="category-navigation" aria-label="内容分类"></nav><div class="collection-controls"><form class="search" role="search"><svg aria-hidden="true"><use href="#search-icon"/></svg><label class="sr-only" for="search">搜索内容</label><input id="search" type="search" placeholder="搜索构想" autocomplete="off" maxlength="100"><kbd aria-hidden="true">/</kbd></form><div class="view-switch" role="group" aria-label="展示方式"><button type="button" id="grid-view" aria-pressed="true" aria-label="卡片视图"><svg aria-hidden="true"><use href="#grid-icon"/></svg></button><button type="button" id="list-view" aria-pressed="false" aria-label="列表视图"><svg aria-hidden="true"><use href="#list-icon"/></svg></button></div></div></div>
         <p class="result-line" id="result-count" role="status"></p>
         <div id="content-grid" class="content-grid"></div>
+        <div class="collection-pagination"><p id="collection-position" role="status"></p><button id="load-more" type="button" hidden>加载更多构想</button></div>
         <div class="empty" id="empty-state" hidden><svg aria-hidden="true"><use href="#search-icon"/></svg><h3>还没有找到相关内容</h3><p>试试材料名称、产品型号，或者查看全部构想。</p><button type="button" id="reset">查看全部构想</button></div>
       </section>
     </section>
@@ -48,7 +49,7 @@
           <div id="paged-gallery"><div class="image-stage"><button class="page-arrow prev" id="previous" aria-label="上一张" type="button"><svg aria-hidden="true"><use href="#arrow"/></svg></button><button type="button" class="main-image-button" id="image-button" aria-label="放大当前图片"></button><button class="page-arrow next" id="next" aria-label="下一张" type="button"><svg aria-hidden="true"><use href="#arrow"/></svg></button></div><div class="gallery-status"><span id="page-position" role="status"></span><span>左右方向键切换图片</span></div><div id="filmstrip" class="filmstrip" aria-label="图文缩略图"></div></div>
           <div id="continuous-gallery" class="continuous-gallery" hidden></div>
         </div>
-        <article class="copy-column"><span id="detail-category" class="category-label"></span><h1 id="detail-title"></h1><div class="detail-meta"><span id="image-count"></span><span>图文内容</span></div><div id="detail-body" class="original-copy"></div><div id="detail-tags" class="tags"></div></article>
+        <article class="copy-column"><span id="detail-category" class="category-label"></span><h1 id="detail-title"></h1><div class="detail-meta"><span id="image-count"></span><span id="content-format">图文内容</span></div><div id="detail-body" class="original-copy"></div><div id="detail-tags" class="tags"></div></article>
       </div>
     </section>
   </main>

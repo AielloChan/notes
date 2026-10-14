@@ -1,7 +1,8 @@
 import { notes } from './data.js';
 
 const $ = id => document.getElementById(id);
-const state = { category: '', query: '', view: 'grid', note: null, page: 0, reading: 'paged' };
+const PAGE_SIZE = 24;
+const state = { category: '', query: '', view: 'grid', note: null, page: 0, reading: 'paged', limit: PAGE_SIZE, filterKey: '' };
 const categories = [...new Set(notes.map(note => note.category).filter(Boolean))];
 const dialog = $('image-dialog');
 const pad = number => String(number).padStart(2, '0');
@@ -39,6 +40,7 @@ function tagButton(tag) {
   button.type = 'button';
   button.addEventListener('click', () => {
     state.query = tag.replace(/^#/, '');
+    state.category = '';
     $('search').value = state.query;
     if (state.note) location.hash = '#collection';
     renderCollection();
@@ -67,25 +69,34 @@ function renderNavigation() {
 function renderCollection() {
   renderNavigation();
   const query = state.query.trim().toLocaleLowerCase();
+  const filterKey = JSON.stringify([state.category, query]);
+  if (state.filterKey !== filterKey) { state.limit = PAGE_SIZE; state.filterKey = filterKey; }
   const matches = notes.filter(note => (!state.category || note.category === state.category) && (!query || [note.title, note.body, ...note.tags].join(' ').toLocaleLowerCase().includes(query)));
+  const visible = matches.slice(0, state.limit);
   $('total-count').textContent = String(notes.length);
   $('result-count').textContent = query ? `“${state.query.trim()}” · 找到 ${matches.length} 篇构想` : state.category ? `${state.category} · ${matches.length} 篇构想` : '';
   $('empty-state').hidden = matches.length > 0;
   $('content-grid').classList.toggle('list', state.view === 'list');
   $('grid-view').setAttribute('aria-pressed', String(state.view === 'grid'));
   $('list-view').setAttribute('aria-pressed', String(state.view === 'list'));
-  $('content-grid').replaceChildren(...matches.map(note => {
+  $('content-grid').replaceChildren(...visible.map(note => {
     const article = element('article', 'content-card');
     const cover = element('a', 'cover');
     cover.href = `#/note/${note.id}`;
     cover.setAttribute('aria-label', `阅读：${note.title}`);
-    const image = element('img');
-    image.src = note.images[0];
-    image.alt = `${note.title}封面`;
-    image.loading = 'lazy';
-    image.width = 1080;
-    image.height = 1440;
-    cover.append(image, element('span', 'cover-count', `${note.images.length} 张`));
+    if (note.images.length) {
+      const image = element('img');
+      image.src = note.cover || note.images[0];
+      image.alt = `${note.title}封面`;
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      image.width = note.imageDimensions?.[0]?.width || 1080;
+      image.height = note.imageDimensions?.[0]?.height || 1440;
+      cover.append(image, element('span', 'cover-count', `${note.images.length} 张`));
+    } else {
+      cover.classList.add('text-cover');
+      cover.append(element('span', 'text-cover-label', note.category), element('p', '', note.title), element('span', 'cover-count', '文章'));
+    }
     const copy = element('div', 'card-copy');
     const heading = element('h2');
     const link = element('a', '', note.title);
@@ -98,10 +109,12 @@ function renderCollection() {
     article.append(cover, copy);
     return article;
   }));
+  $('load-more').hidden = visible.length === matches.length;
+  $('collection-position').textContent = matches.length ? `已显示 ${visible.length} / ${matches.length} 篇` : '';
 }
 
 function renderImage() {
-  if (!state.note) return;
+  if (!state.note?.images.length) return;
   const { images, title } = state.note;
   const alt = `${title} · 第 ${state.page + 1} 张`;
   for (const [id, container] of [['main-image', 'image-button'], ['full-image', 'full-image-container']]) {
@@ -144,29 +157,41 @@ function renderDetail(note) {
   $('image-count').textContent = `${note.images.length} 张图片`;
   $('dialog-caption').textContent = note.title;
   $('detail-tags').replaceChildren(...note.tags.map(tagButton));
+  const hasImages = note.images.length > 0;
+  document.querySelector('.gallery-column').hidden = !hasImages;
+  document.querySelector('.detail-layout').classList.toggle('text-article', !hasImages);
+  $('image-count').hidden = !hasImages;
+  $('content-format').textContent = hasImages ? '图文内容' : '文字文章';
   $('filmstrip').replaceChildren(...note.images.map((src, index) => {
     const button = element('button');
     button.type = 'button';
     button.setAttribute('aria-label', `查看第 ${index + 1} 张图片`);
     const image = element('img');
-    image.src = src;
+    image.src = note.thumbnails?.[index] || src;
     image.alt = '';
     image.loading = 'lazy';
+    image.decoding = 'async';
     button.append(image, element('span', '', pad(index + 1)));
     button.addEventListener('click', () => { state.page = index; renderImage(); });
     return button;
   }));
+  $('continuous-gallery').replaceChildren();
+  setReading('paged');
+  renderImage();
+}
+
+function renderContinuous() {
+  const note = state.note;
+  if (!note || $('continuous-gallery').children.length) return;
   $('continuous-gallery').replaceChildren(...note.images.map((src, index) => {
     const image = element('img');
     image.src = src;
     image.alt = `${note.title} · 第 ${index + 1} 张`;
-    image.width = 1080;
-    image.height = 1440;
+    image.width = note.imageDimensions?.[index]?.width || 1080;
+    image.height = note.imageDimensions?.[index]?.height || 1440;
     image.loading = 'lazy';
     return image;
   }));
-  setReading('paged');
-  renderImage();
 }
 
 function route() {
@@ -186,7 +211,7 @@ function route() {
 }
 
 function openImage() {
-  if (!state.note) return;
+  if (!state.note?.images.length) return;
   dialog.showModal();
   document.documentElement.style.overflow = 'hidden';
   dialog.querySelector('.dialog-image').scrollTop = 0;
@@ -200,7 +225,15 @@ dialog.addEventListener('click', event => { if (event.target === dialog) dialog.
 for (const id of ['previous', 'dialog-prev']) $(id).addEventListener('click', () => movePage(-1));
 for (const id of ['next', 'dialog-next']) $(id).addEventListener('click', () => movePage(1));
 $('paged-view').addEventListener('click', () => setReading('paged'));
-$('continuous-view').addEventListener('click', () => setReading('continuous'));
+$('continuous-view').addEventListener('click', () => { renderContinuous(); setReading('continuous'); });
+$('load-more').addEventListener('click', () => {
+  const firstNew = $('content-grid').children.length;
+  state.limit += PAGE_SIZE;
+  renderCollection();
+  const cover = $('content-grid').children[firstNew]?.querySelector('.cover');
+  cover?.focus({ preventScroll: true });
+  cover?.scrollIntoView({ block: 'start' });
+});
 for (const view of ['grid', 'list']) $(`${view}-view`).addEventListener('click', () => { state.view = view; renderCollection(); });
 $('reset').addEventListener('click', () => {
   state.query = '';
